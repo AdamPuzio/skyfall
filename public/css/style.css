@@ -1,0 +1,61 @@
+
+.box {
+	box-shadow: 0 1px 3px rgba(34, 25, 25, 0.4);
+	height: 200px;
+	position: relative;
+	float: left;
+	-webkit-border-radius: 4px;
+		-moz-border-radius: 4px;
+			border-radius: 4px;
+}
+
+.box-header, .box-header-mini, .box-header-mini-right {
+	position: absolute;
+	background-color: #f5f5f5;
+	border: 1px solid #ddd;
+	color: #333;
+}
+.box-header-mini-right {
+	right: -1px;
+	top: -1px;
+	padding: 3px 7px;
+	-webkit-border-radius: 0 4px 0 4px;
+		-moz-border-radius: 0 4px 0 4px;
+			border-radius: 0 4px 0 4px;
+}
+
+.server-load {width: 300px; margin: 10px; padding: 10px;}
+.server-load .server-name {height: 30px;}
+.server-load .uptime {height: 20px; display: block;}
+.server-load .load_1min {min-height: 60px; font-size: 40px; padding-top: 20px; text-align: center;}
+.server-load .load_5min, .server-load .load_15min {font-size: 20px; padding-top: 5px;}
+.server-load.inactive {color: #CCC !important;}
+
+.cpu-bar {
+	display: block;
+	height: 10px;
+	/*border: 1px solid #CCC;*/
+	padding: 2px;
+}
+.cpu-bar .user, .cpu-bar .system, .cpu-bar .free, .cpu-bar .cpu-pct, .cpu-bar .cpu-load-types {
+	display: block;
+	float: left;
+	height: 10px;
+}
+.cpu-bar .cpu-load-types {
+	width: 250px;
+	border: 1px solid #EEE;
+	overflow: hidden;
+}
+.cpu-bar .cpu-pct {
+	font-size: 10px;
+	padding: 0;
+	width: 30px;
+	line-height: 10px;
+	font-weight: bold;
+}
+.cpu-bar .user {background-color: green;}
+.server-load.inactive .user {background-color: #DDD;}
+.cpu-bar .system {background-color: red;}
+.server-load.inactive .system {background-color: #CCC;}
+.cpu-bar .free {background-color: #CCC;}
