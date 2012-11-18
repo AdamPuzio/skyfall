@@ -7,7 +7,8 @@ var ServerMonitor = {
 		return null;
 	}
 	
-	, addServer: function(serverName, ip, port){
+	, addServer: function(serverName, ip, port, start){
+		if(!start) start = true;
 		if(this._servers[serverName]) return;
 		
 		var socket = io.connect('http://' + ip + ':' + port);
@@ -38,6 +39,7 @@ var ServerMonitor = {
 			e.preventDefault();
 			ServerMonitor.stopServer(this.name);
 		}, this._servers[serverName]));
+		if(start) this.startServer(serverName);
 	}
 	
 	, sysInfo: function(data){
@@ -127,6 +129,13 @@ var ServerMonitor = {
 
 
 $(document).ready(function(){
-	ServerMonitor.addServer('Localhost', 'localhost', 3007);
+	//ServerMonitor.addServer('Localhost', 'localhost', 3007);
 	
+	$('#addServerForm .btn').click(function(e){
+		e.preventDefault();
+		var name = $('#addServerForm input[name="name"]').val();
+		var ip = $('#addServerForm input[name="ip"]').val();
+		var port = $('#addServerForm input[name="port"]').val();
+		ServerMonitor.addServer(name, ip, port);
+	});
 });
