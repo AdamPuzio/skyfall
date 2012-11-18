@@ -117,10 +117,10 @@ var ServerMonitor = {
 	
 	, _convertTime: function(ts){
 		var totalSec = ts;
-		days = parseInt( totalSec / 86400 );
-		hours = parseInt( totalSec / 3600 ) % 24;
-		minutes = parseInt( totalSec / 60 ) % 60;
-		seconds = totalSec % 60;
+		days = parseInt(totalSec / 86400);
+		hours = parseInt(totalSec / 3600) % 24;
+		minutes = parseInt(totalSec / 60) % 60;
+		seconds = parseInt(totalSec % 60);
 		
 		result = (days > 0 ? days + ' days ' : '') + (hours < 10 ? "0" + hours : hours) + "hrs " + (minutes < 10 ? "0" + minutes : minutes) + "min " + (seconds  < 10 ? "0" + seconds : seconds) + 'sec';
 		return result;
