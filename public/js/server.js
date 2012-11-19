@@ -32,7 +32,8 @@ var ServerMonitor = {
 		socket.on('sysInfo', $.proxy(this.sysInfo, this._servers[serverName]));
 		socket.on('loadInfo', $.proxy(this.loadInfo, this._servers[serverName]));
 		socket.on('disconnect', $.proxy(function(){
-			console.log('disconnected from ' + this.name);
+			if(console) console.log('disconnected from ' + this.name);
+			ServerMonitor.stopServer(this.name);
 		}, this._servers[serverName]));
 		
 		el.find('.icon-play').parent().click($.proxy(function(e){
@@ -112,8 +113,6 @@ var ServerMonitor = {
 			cpuBar.find('.user').animate({width: user + '%'});
 			cpuBar.find('.system').animate({width: sys + '%'});
 		}else{
-			//cpuBar.find('.user').width(user + '%');
-			//cpuBar.find('.system').width(sys + '%');
 			cpuBar.find('.user').css({width: user + '%'});
 			cpuBar.find('.system').css({width: sys + '%'});
 		}
@@ -162,7 +161,11 @@ var ServerMonitor = {
 
 
 $(document).ready(function(){
-	//ServerMonitor.addServer('Localhost', 'localhost', 3007);
+	for(var name in servers){
+		var address = servers[name]['address'];
+		var port = servers[name]['port'];
+		ServerMonitor.addServer(name, address, port);
+	}
 	
 	$('#addServerForm .btn').click(function(e){
 		e.preventDefault();

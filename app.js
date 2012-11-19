@@ -12,33 +12,35 @@ var express = require('express')
 	, exec = require('child_process').exec
 	, util = require('util')
 	, os = require('os')
-  , sky = require('./skyfall/skyfall');
+	, sky = require('./skyfall/skyfall');
 
 io.set('log level', 1);
 
+var servers = require('./config/servers').servers;
+
 app.configure(function(){
-  app.set('port', process.env.PORT || 3007);
-  app.set('views', __dirname + '/views');
-  app.set('view engine', 'ejs');
-  app.use(express.favicon());
-  app.use(express.logger('dev'));
-  app.use(express.bodyParser());
-  app.use(express.methodOverride());
-  app.use(express.cookieParser('skyfall'));
-  app.use(express.session());
-  app.use(app.router);
-  app.use(express.static(path.join(__dirname, 'public')));
+	app.set('port', process.env.PORT || 3007);
+	app.set('views', __dirname + '/views');
+	app.set('view engine', 'ejs');
+	app.use(express.favicon());
+	app.use(express.logger('dev'));
+	app.use(express.bodyParser());
+	app.use(express.methodOverride());
+	app.use(express.cookieParser('skyfall'));
+	app.use(express.session());
+	app.use(app.router);
+	app.use(express.static(path.join(__dirname, 'public')));
 });
 
 app.configure('development', function(){
-  app.use(express.errorHandler());
+	app.use(express.errorHandler());
 });
 
 app.get('/', routes.index);
 
 
 /*** START SKYFALL ****/
-sky.fall.start(io);
+sky.fall.start(io, os);
 
 
 server.listen(app.get('port'), function(){
