@@ -1,7 +1,6 @@
 
 exports.fall = function(){
   var pollRequestId = null
-
   , startRequest = function(os,socket, interval){
       if(!interval) interval = 2000;
       var sysInfo = {

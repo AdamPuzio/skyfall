@@ -13,8 +13,7 @@ var express = require('express')
 	, exec = require('child_process').exec
 	, util = require('util')
 	, os = require('os')
-  , sky = require('./skyfall/skyfall')
-
+  , sky = require('./skyfall/skyfall');
 io.set('log level', 1);
 
 app.configure(function(){
@@ -35,13 +34,14 @@ app.configure('development', function(){
   app.use(express.errorHandler());
 });
 
+
 app.get('/', routes.index);
 
 
 /*** START SKYFALL ****/
 sky.fall.start(io, os)
 
-
 server.listen(app.get('port'), function(){
-	console.log("Express server listening on port " + app.get('port'));
+	console.log("Skyfall listening on port " + app.get('port'));
 });
+
