@@ -42,8 +42,8 @@
 	float: left;
 }
 .cpu.cpu-4 .cpu-bar {width: 300px;}
-.cpu.cpu-8 .cpu-bar {width: 135px;}
-.cpu.cpu-16 .cpu-bar {width: 70px;}
+.cpu.cpu-6 .cpu-bar, .cpu.cpu-8 .cpu-bar {width: 135px;}
+.cpu.cpu-10 .cpu-bar, .cpu.cpu-12 .cpu-bar, .cpu.cpu-16 .cpu-bar {width: 70px;}
 .cpu.cpu-32 .cpu-bar {width: 70px;}
 .cpu-bar .user, .cpu-bar .system, .cpu-bar .free, .cpu-bar .cpu-pct, .cpu-bar .cpu-load-types {
 	display: block;
@@ -55,7 +55,7 @@
 	border: 1px solid #EEE;
 	overflow: hidden;
 }
-.cpu.cpu-8 .cpu-load-types {width: 110px;}
+.cpu.cpu-6 .cpu-load-types, .cpu.cpu-8 .cpu-load-types {width: 110px;}
 .cpu.cpu-16 .cpu-load-types, .cpu.cpu-32 .cpu-load-types {width: 45px;}
 .cpu-bar .cpu-pct {
 	font-size: 8px;
