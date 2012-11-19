@@ -1,4 +1,3 @@
-
 /**
  * Module dependencies.
  */
@@ -13,7 +12,7 @@ var express = require('express')
 	, exec = require('child_process').exec
 	, util = require('util')
 	, os = require('os')
-  , sky = require('./skyfall/skyfall')
+  , sky = require('./skyfall/skyfall');
 
 io.set('log level', 1);
 
@@ -43,5 +42,5 @@ sky.fall.start(io);
 
 
 server.listen(app.get('port'), function(){
-	console.log("Express server listening on port " + app.get('port'));
+	console.log("Skyfall server listening on port " + app.get('port'));
 });
