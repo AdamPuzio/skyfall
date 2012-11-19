@@ -16,8 +16,6 @@ var express = require('express')
 
 io.set('log level', 1);
 
-var servers = require('./config/servers').servers;
-
 app.configure(function(){
 	app.set('port', process.env.PORT || 3007);
 	app.set('views', __dirname + '/views');
