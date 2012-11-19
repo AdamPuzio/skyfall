@@ -1,6 +1,10 @@
 
 var ServerMonitor = {
 	_servers: {}
+	, _settings: {
+		animate: true
+		, warningLevel: 40
+	}
 	
 	, getServer: function(serverName){
 		if(this._servers[serverName]) return this._servers[serverName];
@@ -27,9 +31,9 @@ var ServerMonitor = {
 		
 		socket.on('sysInfo', $.proxy(this.sysInfo, this._servers[serverName]));
 		socket.on('loadInfo', $.proxy(this.loadInfo, this._servers[serverName]));
-		socket.on('disconnect', function(){
-			
-		});
+		socket.on('disconnect', $.proxy(function(){
+			console.log('disconnected from ' + this.name);
+		}, this._servers[serverName]));
 		
 		el.find('.icon-play').parent().click($.proxy(function(e){
 			e.preventDefault();
@@ -46,6 +50,10 @@ var ServerMonitor = {
 		this.el.find('.server-name').html(this.name);
 		var cpuContainer = this.el.find('.cpu');
 		if(Object.keys(this.cpuTimes).length) return;
+		
+		this.el.find('.cpu').addClass('cpu-' + data.cpus.length);
+		$('#cloneBox .cpu-bar').clone().addClass('cpu-bar-all').appendTo(this.el.find('.cpu-all'));
+		
 		for(var i=0; i<data.cpus.length; i++){
 			var el = $('#cloneBox .cpu-bar').clone().addClass('cpu-bar-' + i);
 			el.appendTo(cpuContainer);
@@ -58,9 +66,16 @@ var ServerMonitor = {
 		el.find('.load_1min').html(data.loadavg[0].toFixed(2));
 		el.find('.load_5min').html(data.loadavg[1].toFixed(2));
 		el.find('.load_15min').html(data.loadavg[2].toFixed(2));
+		if(data.loadavg[0] >= ServerMonitor._settings.warningLevel){
+			el.addClass('warning');
+		}else{
+			el.removeClass('warning');
+		}
 		
 		var uptime = ServerMonitor._convertTime(data.uptime);
 		el.find('.uptime').html(uptime);
+		
+		var totalAll = 0, timesAll = {};
 		
 		for(var i = 0; i < data.cpus.length; i++) {
 			var cpu = data.cpus[i], total = 0;
@@ -77,6 +92,9 @@ var ServerMonitor = {
 				total += typeTime;
 				this.cpuTimes[i][type] = time;
 				times[type] = typeTime;
+				totalAll += typeTime;
+				if(!timesAll[type]) timesAll[type] = 0;
+				timesAll[type] += typeTime;
 			}
 			
 			var user = Math.round(100 * times['user'] / total);
@@ -85,6 +103,21 @@ var ServerMonitor = {
 			cpuBar.find('.user').animate({width: user + '%'});
 			cpuBar.find('.system').animate({width: sys + '%'});
 		}
+		var cpuBar = el.find('.cpu-bar-all');
+		var user = Math.round(100 * timesAll['user'] / (total * data.cpus.length));
+		var sys = Math.round(100 * timesAll['sys'] / (total * data.cpus.length));
+		cpuBar.find('.cpu-pct').html((user + sys) + '%');
+		
+		if(ServerMonitor._settings.animate === true){
+			cpuBar.find('.user').animate({width: user + '%'});
+			cpuBar.find('.system').animate({width: sys + '%'});
+		}else{
+			//cpuBar.find('.user').width(user + '%');
+			//cpuBar.find('.system').width(sys + '%');
+			cpuBar.find('.user').css({width: user + '%'});
+			cpuBar.find('.system').css({width: sys + '%'});
+		}
+		
 	}
 	
 	, startServer: function(serverName){
@@ -137,5 +170,13 @@ $(document).ready(function(){
 		var ip = $('#addServerForm input[name="ip"]').val();
 		var port = $('#addServerForm input[name="port"]').val();
 		ServerMonitor.addServer(name, ip, port);
+	});
+	
+	$('.server-settings input[name="animate"]').change(function(){
+		ServerMonitor._settings.animate = $(this).attr('checked') == 'checked';
+	});
+	
+	$('.server-settings input[name="warning-level"]').blur(function(){
+		ServerMonitor._settings.warningLevel = $(this).val();
 	});
 });
