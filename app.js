@@ -39,7 +39,7 @@ app.get('/', routes.index);
 
 
 /*** START SKYFALL ****/
-sky.fall.start(io);
+sky.fall.start(io, os)
 
 
 server.listen(app.get('port'), function(){

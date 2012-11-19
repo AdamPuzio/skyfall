@@ -2,7 +2,7 @@
 exports.fall = function(){
   var pollRequestId = null
 
-  , startRequest = function(socket, interval){
+  , startRequest = function(os,socket, interval){
       if(!interval) interval = 2000;
       var sysInfo = {
         hostname: os.hostname()
@@ -31,10 +31,10 @@ exports.fall = function(){
       pollRequestId = null;
 
   }
-  , init = function(io){
+  , init = function(io,os){
     io.sockets.on('connection', function (socket) {
       socket.on('start', function (data) {
-        startRequest(socket);
+        startRequest(os,socket);
       });
       socket.on('stop', function (data) {
         stopRequest();
