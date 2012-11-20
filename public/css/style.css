@@ -70,6 +70,9 @@
 .cpu-bar .system {background-color: red;}
 .server-load.inactive .system {background-color: #CCC;}
 .cpu-bar .free {background-color: #CCC;}
+.diskspace-container, .memory-container {position: relative;}
+.diskspace, .memory {position: absolute; left: 0; top: 0px; padding-top: 5px; font-size: 18px; z-index: 10;}
+.diskspace-bar, .memory-bar {position: absolute; left: 0; top: 2px; height: 24px; background-color: #EEE; border: 1px solid #CCC; z-index: 1;}
 
 .form-horizontal .control-label {width: 100px; margin-right: 5px;}
 .form-horizontal .control-group {margin-bottom: 0px;}

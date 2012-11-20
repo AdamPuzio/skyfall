@@ -31,6 +31,7 @@ var ServerMonitor = {
 		
 		socket.on('sysInfo', $.proxy(this.sysInfo, this._servers[serverName]));
 		socket.on('loadInfo', $.proxy(this.loadInfo, this._servers[serverName]));
+		socket.on('diskspace', $.proxy(this.diskspace, this._servers[serverName]));
 		socket.on('disconnect', $.proxy(function(){
 			if(console) console.log('disconnected from ' + this.name);
 			ServerMonitor.stopServer(this.name);
@@ -44,6 +45,10 @@ var ServerMonitor = {
 			e.preventDefault();
 			ServerMonitor.stopServer(this.name);
 		}, this._servers[serverName]));
+		el.find('.icon-remove').parent().click($.proxy(function(e){
+			e.preventDefault();
+			ServerMonitor.removeServer(this.name);
+		}, this._servers[serverName]));
 		if(start) this.startServer(serverName);
 	}
 	
@@ -56,7 +61,7 @@ var ServerMonitor = {
 		$('#cloneBox .cpu-bar').clone().addClass('cpu-bar-all').appendTo(this.el.find('.cpu-all'));
 		
 		for(var i=0; i<data.cpus.length; i++){
-			var el = $('#cloneBox .cpu-bar').clone().addClass('cpu-bar-' + i);
+			var el = $('#cloneBox .cpu-bar').clone().addClass('cpu-bar-' + i).attr('title', 'CPU Load (#' + (i + 1) + ')');
 			el.appendTo(cpuContainer);
 			this.cpuTimes[i] = {};
 		}
@@ -116,11 +121,21 @@ var ServerMonitor = {
 			cpuBar.find('.user').css({width: user + '%'});
 			cpuBar.find('.system').css({width: sys + '%'});
 		}
-		
+		var used = data.totalmem - data.freemem;
+		var pct = data.totalmem > 0 ? (used / data.totalmem).toFixed(2) * 100 : 0;
+		el.find('.memory').html('M: ' + pct + '%');
+		this.el.find('.memory-bar').css({width: pct + '%'});
+	}
+	
+	, diskspace: function(data){
+		var used = data.total - data.free;
+		var pct = data.total > 0 ? (used / data.total).toFixed(2) * 100 : 0;
+		this.el.find('.diskspace').html('D: ' + pct + '%');
+		this.el.find('.diskspace-bar').css({width: pct + '%'});
 	}
 	
 	, startServer: function(serverName){
-		var server = this.getServer(serverName);
+		var server = ServerMonitor.getServer(serverName);
 		server.socket.emit('start');
 		server.el.removeClass('inactive');
 		server.el.find('.icon-play').addClass('hidden');
@@ -128,11 +143,18 @@ var ServerMonitor = {
 	}
 	
 	, stopServer: function(serverName){
-		var server = this.getServer(serverName);
+		var server = ServerMonitor.getServer(serverName);
 		server.socket.emit('stop');
 		server.el.addClass('inactive');
 		server.el.find('.icon-play').removeClass('hidden');
 		server.el.find('.icon-pause').addClass('hidden');
+	}
+	
+	, removeServer: function(serverName){
+		var server = ServerMonitor.getServer(serverName);
+		server.socket.emit('stop');
+		server.el.remove();
+		delete this._servers[serverName];
 	}
 	
 	, startAll: function(){
@@ -181,5 +203,9 @@ $(document).ready(function(){
 	
 	$('.server-settings input[name="warning-level"]').blur(function(){
 		ServerMonitor._settings.warningLevel = $(this).val();
+	});
+	
+	$('[rel="tooltip"]').livequery(function(){
+		$(this).tooltip();
 	});
 });
