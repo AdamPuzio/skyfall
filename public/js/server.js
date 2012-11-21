@@ -70,6 +70,7 @@ var ServerMonitor = {
 	
 	, loadInfo: function(data){
 		var el = this.el;
+		var showAdvanced = el.find('.cpu').css('display') != 'none';
 		el.find('.load_1min').html(data.loadavg[0].toFixed(2));
 		el.find('.load_5min').html(data.loadavg[1].toFixed(2));
 		el.find('.load_15min').html(data.loadavg[2].toFixed(2));
@@ -104,11 +105,13 @@ var ServerMonitor = {
 				timesAll[type] += typeTime;
 			}
 			
-			var user = Math.round(100 * times['user'] / total);
-			var sys = Math.round(100 * times['sys'] / total);
-			cpuBar.find('.cpu-pct').html((user + sys) + '%');
-			cpuBar.find('.user').animate({width: user + '%'});
-			cpuBar.find('.system').animate({width: sys + '%'});
+			if(showAdvanced){
+				var user = Math.round(100 * times['user'] / total);
+				var sys = Math.round(100 * times['sys'] / total);
+				cpuBar.find('.cpu-pct').html((user + sys) + '%');
+				cpuBar.find('.user').animate({width: user + '%'});
+				cpuBar.find('.system').animate({width: sys + '%'});
+			}
 		}
 		var cpuBar = el.find('.cpu-bar-all');
 		var user = Math.round(100 * timesAll['user'] / (total * data.cpus.length));
