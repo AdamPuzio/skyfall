@@ -34,7 +34,7 @@ var ServerMonitor = {
 		socket.on('diskspace', $.proxy(this.diskspace, this._servers[serverName]));
 		socket.on('disconnect', $.proxy(function(){
 			if(console) console.log('disconnected from ' + this.name);
-			ServerMonitor.stopServer(this.name);
+			ServerMonitor.stopServer(this.name, this.key);
 		}, this._servers[serverName]));
 		
 		el.find('.icon-play').parent().click($.proxy(function(e){
@@ -53,6 +53,7 @@ var ServerMonitor = {
 	}
 	
 	, sysInfo: function(data){
+		this.key = data.key;
 		this.el.find('.server-name').html(this.name);
 		var cpuContainer = this.el.find('.cpu');
 		if(Object.keys(this.cpuTimes).length) return;
@@ -136,7 +137,7 @@ var ServerMonitor = {
 	
 	, startServer: function(serverName){
 		var server = ServerMonitor.getServer(serverName);
-		server.socket.emit('start');
+		server.socket.emit('start', {key: server.key});
 		server.el.removeClass('inactive');
 		server.el.find('.icon-play').addClass('hidden');
 		server.el.find('.icon-pause').removeClass('hidden');
@@ -144,7 +145,7 @@ var ServerMonitor = {
 	
 	, stopServer: function(serverName){
 		var server = ServerMonitor.getServer(serverName);
-		server.socket.emit('stop');
+		server.socket.emit('stop', {key: server.key});
 		server.el.addClass('inactive');
 		server.el.find('.icon-play').removeClass('hidden');
 		server.el.find('.icon-pause').addClass('hidden');
@@ -152,7 +153,7 @@ var ServerMonitor = {
 	
 	, removeServer: function(serverName){
 		var server = ServerMonitor.getServer(serverName);
-		server.socket.emit('stop');
+		server.socket.emit('stop', {key: server.key});
 		server.el.remove();
 		delete this._servers[serverName];
 	}

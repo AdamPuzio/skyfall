@@ -1,11 +1,9 @@
 
 exports.fall = function(){
-	var pollRequestId = null
-	, diskspacePollRequestId = null
-	, servers = null
+	servers = null
 	, interval = 2000
 
-	, startRequest = function(os, socket, scope){
+	, startRequest = function(os, socket, scope, session){
 		var interval = scope.interval;
 		var sysInfo = {
 			hostname: os.hostname()
@@ -14,23 +12,25 @@ exports.fall = function(){
 			, arch: os.arch()
 			, release: os.release()
 			, cpus: os.cpus()
+			, key: session.id
 		};
 		socket.emit('sysInfo', sysInfo);
-		pollRequestId = setInterval(scope.emitServerLoad, interval, scope);
-		scope.emitServerLoad(scope);
+		session.pollRequestId = setInterval(scope.emitServerLoad, interval, scope, session);
+		scope.emitServerLoad(scope, session);
 		
-		diskspacePollRequestId = setInterval(scope.emitDiskspace, 10000, scope);
-		scope.emitDiskspace(scope);
+		session.diskspacePollRequestId = setInterval(scope.emitDiskspace, 10000, scope, session);
+		scope.emitDiskspace(scope, session);
 	}
 	
-	, stopRequest = function(){
-		clearInterval(pollRequestId);
-		pollRequestId = null;
-		clearInterval(diskspacePollRequestId);
-		diskspacePollRequestId = null;
+	, stopRequest = function(socket, scope, session){
+		if(!session) return;
+		clearInterval(session.pollRequestId);
+		session.pollRequestId = null;
+		clearInterval(session.diskspacePollRequestId);
+		session.diskspacePollRequestId = null;
 	}
 	
-	, emitServerLoad = function(scope){
+	, emitServerLoad = function(scope, session){
 		var os = scope.os;
 		var output = {
 			ts: new Date().toJSON()
@@ -41,11 +41,11 @@ exports.fall = function(){
 			, cpus: os.cpus()
 			, networkInterfaces: os.networkInterfaces()
 		};
-		scope.socket.emit('loadInfo', output);
+		session.socket.emit('loadInfo', output);
 	}
 	
-	, emitDiskspace = function(scope){
-		var socket = scope.socket;
+	, emitDiskspace = function(scope, session){
+		var socket = session.socket;
 		scope.diskspace.check('/', function (total, free, status){
 			var output = {
 				total: total
@@ -56,20 +56,34 @@ exports.fall = function(){
 		});
 	}
 	
+	, createSession = function(scope){
+		scope.sessionId++;
+		var sessionId = scope.sessionId;
+		session = scope.sessions['S' + sessionId] = {id: sessionId};
+		return session;
+	}
+	
+	, getSession = function(scope, id){
+		if(scope.sessions && scope.session['S' + sessionId]) return scope.session['S' + sessionId];
+		return null;
+	}
+	
 	, init = function(io, os){
 		var skyfall = this;
 		this.diskspace = require('diskspace');
 		this.os = os;
 		io.sockets.on('connection', function (socket) {
-			skyfall.socket = socket;
+			var session = skyfall.createSession(skyfall);
+			session.socket = socket;
 			socket.on('start', function (data) {
-				startRequest(os, socket, skyfall);
+				if(data && data.key) session = skyfall.sessions['S' + data.key];
+				startRequest(os, socket, skyfall, session);
 			});
 			socket.on('stop', function (data) {
-				stopRequest();
+				stopRequest(socket, skyfall, session);
 			});
-			socket.on('disconnect', function(){
-				stopRequest();
+			socket.on('disconnect', function(data){
+				stopRequest(socket, skyfall, session);
 			});
 		});
 	};
@@ -79,6 +93,9 @@ exports.fall = function(){
 		, interval: 2000
 		, emitDiskspace: emitDiskspace
 		, emitServerLoad: emitServerLoad
+		, createSession: createSession
 		, diskspace: null
+		, sessions: {}
+		, sessionId: 0
 	}
 }();
