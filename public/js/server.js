@@ -126,14 +126,14 @@ var ServerMonitor = {
 			cpuBar.find('.system').css({width: sys + '%'});
 		}
 		var used = data.totalmem - data.freemem;
-		var pct = data.totalmem > 0 ? (used / data.totalmem).toFixed(2) * 100 : 0;
+		var pct = data.totalmem > 0 ? Math.round((used / data.totalmem) * 100) : 0;
 		el.find('.memory').html('M: ' + pct + '%');
 		this.el.find('.memory-bar').css({width: pct + '%'});
 	}
 	
 	, diskspace: function(data){
 		var used = data.total - data.free;
-		var pct = data.total > 0 ? (used / data.total).toFixed(2) * 100 : 0;
+		var pct = data.total > 0 ? Math.round((used / data.total) * 100) : 0;
 		this.el.find('.diskspace').html('D: ' + pct + '%');
 		this.el.find('.diskspace-bar').css({width: pct + '%'});
 	}
