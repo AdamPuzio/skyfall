@@ -3,8 +3,11 @@ exports.fall = function(){
 	servers = null
 	, interval = 2000
 
-	, startRequest = function(os, socket, scope, session){
+	, startRequest = function(socket){
+		var scope = socket.scope;
+		var os = scope.os;
 		var interval = scope.interval;
+		
 		var sysInfo = {
 			hostname: os.hostname()
 			, type: os.type()
@@ -12,26 +15,24 @@ exports.fall = function(){
 			, arch: os.arch()
 			, release: os.release()
 			, cpus: os.cpus()
-			, key: session.id
 		};
 		socket.emit('sysInfo', sysInfo);
-		session.pollRequestId = setInterval(scope.emitServerLoad, interval, scope, session);
-		scope.emitServerLoad(scope, session);
+		socket.pollRequestId = setInterval(scope.emitServerLoad, interval, socket);
+		scope.emitServerLoad(socket);
 		
-		session.diskspacePollRequestId = setInterval(scope.emitDiskspace, 10000, scope, session);
-		scope.emitDiskspace(scope, session);
+		socket.diskspacePollRequestId = setInterval(scope.emitDiskspace, 10000, socket);
+		scope.emitDiskspace(socket);
 	}
 	
-	, stopRequest = function(socket, scope, session){
-		if(!session) return;
-		clearInterval(session.pollRequestId);
-		session.pollRequestId = null;
-		clearInterval(session.diskspacePollRequestId);
-		session.diskspacePollRequestId = null;
+	, stopRequest = function(socket){
+		clearInterval(socket.pollRequestId);
+		socket.pollRequestId = null;
+		clearInterval(socket.diskspacePollRequestId);
+		socket.diskspacePollRequestId = null;
 	}
 	
-	, emitServerLoad = function(scope, session){
-		var os = scope.os;
+	, emitServerLoad = function(socket){
+		var os = socket.scope.os;
 		var output = {
 			ts: new Date().toJSON()
 			, uptime: os.uptime()
@@ -41,11 +42,11 @@ exports.fall = function(){
 			, cpus: os.cpus()
 			, networkInterfaces: os.networkInterfaces()
 		};
-		session.socket.emit('loadInfo', output);
+		socket.emit('loadInfo', output);
 	}
 	
-	, emitDiskspace = function(scope, session){
-		var socket = session.socket;
+	, emitDiskspace = function(socket){
+		var scope = socket.scope;
 		scope.diskspace.check('/', function (total, free, status){
 			var output = {
 				total: total
@@ -56,34 +57,22 @@ exports.fall = function(){
 		});
 	}
 	
-	, createSession = function(scope){
-		scope.sessionId++;
-		var sessionId = scope.sessionId;
-		session = scope.sessions['S' + sessionId] = {id: sessionId};
-		return session;
-	}
-	
-	, getSession = function(scope, id){
-		if(scope.sessions && scope.session['S' + sessionId]) return scope.session['S' + sessionId];
-		return null;
-	}
-	
-	, init = function(io, os){
-		var skyfall = this;
+	, init = function(server){
+		io = require('socket.io').listen(server);
+		io.set('log level', 1);
+		this.os = require('os');
 		this.diskspace = require('diskspace');
-		this.os = os;
+		var scope = this;
 		io.sockets.on('connection', function (socket) {
-			var session = skyfall.createSession(skyfall);
-			session.socket = socket;
+			socket.scope = scope;
 			socket.on('start', function (data) {
-				if(data && data.key) session = skyfall.sessions['S' + data.key];
-				startRequest(os, socket, skyfall, session);
+				startRequest(socket, data);
 			});
 			socket.on('stop', function (data) {
-				stopRequest(socket, skyfall, session);
+				stopRequest(socket, data);
 			});
 			socket.on('disconnect', function(data){
-				stopRequest(socket, skyfall, session);
+				stopRequest(socket, data);
 			});
 		});
 	};
@@ -93,9 +82,5 @@ exports.fall = function(){
 		, interval: 2000
 		, emitDiskspace: emitDiskspace
 		, emitServerLoad: emitServerLoad
-		, createSession: createSession
-		, diskspace: null
-		, sessions: {}
-		, sessionId: 0
 	}
 }();

@@ -86,3 +86,6 @@
 
 .form-horizontal .control-label {width: 100px; margin-right: 5px;}
 .form-horizontal .control-group {margin-bottom: 0px;}
+
+#messageContainer {position: fixed; top: 50px; left: 10px; right: 10px; z-index: 10000;}
+#messageContainer .alert {margin-bottom: 5px;}
