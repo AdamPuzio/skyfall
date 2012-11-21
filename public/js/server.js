@@ -109,8 +109,13 @@ var ServerMonitor = {
 				var user = Math.round(100 * times['user'] / total);
 				var sys = Math.round(100 * times['sys'] / total);
 				cpuBar.find('.cpu-pct').html((user + sys) + '%');
-				cpuBar.find('.user').animate({width: user + '%'});
-				cpuBar.find('.system').animate({width: sys + '%'});
+				if(ServerMonitor._settings.animate === true){
+					cpuBar.find('.user').animate({width: user + '%'});
+					cpuBar.find('.system').animate({width: sys + '%'});
+				}else{
+					cpuBar.find('.user').css({width: user + '%'});
+					cpuBar.find('.system').css({width: sys + '%'});
+				}
 			}
 		}
 		var cpuBar = el.find('.cpu-bar-all');
@@ -201,12 +206,22 @@ $(document).ready(function(){
 		ServerMonitor.addServer(name, ip, port);
 	});
 	
-	$('.server-settings input[name="animate"]').change(function(){
-		ServerMonitor._settings.animate = $(this).attr('checked') == 'checked';
-	});
-	
 	$('.server-settings input[name="warning-level"]').blur(function(){
 		ServerMonitor._settings.warningLevel = $(this).val();
+	});
+	
+	$('.simple-mode').click(function(e){
+		var simpleMode = !$(this).hasClass('active');
+		if(simpleMode){
+			$('.server-load').addClass('simple-mode');
+		}else{
+			$('.server-load').removeClass('simple-mode');
+		}
+	});
+	
+	$('.animate').click(function(e){
+		var animate = !$(this).hasClass('active');
+		ServerMonitor._settings.animate = animate;
 	});
 	
 	$('[rel="tooltip"]').livequery(function(){

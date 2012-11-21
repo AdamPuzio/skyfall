@@ -25,6 +25,15 @@
 }
 
 .server-load {width: 300px; margin: 10px; padding: 10px;}
+.server-load.simple-mode {height: 150px;}
+@media (max-width: 480px) {
+	.server-load.simple-mode {height: 200px;}
+	.load .span3 {width: 50%; float: left;}
+}
+@media (max-width: 767px) {
+	.server-load.simple-mode {height: 200px;}
+	.load .span3 {width: 50%; float: left;}
+}
 .server-load .server-name {height: 30px; margin: 0 0 10px 0;}
 .server-load .uptime {min-height: 20px; display: block;}
 .server-load .load_1min {min-height: 50px; font-size: 40px; padding-top: 15px; text-align: center;}
@@ -33,6 +42,7 @@
 .server-load.warning {color: red !important;}
 
 .cpu-all {height: 25px; margin-top: 5px;}
+.simple-mode .cpu {display: none;}
 
 .cpu-bar {
 	display: block;
