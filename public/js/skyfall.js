@@ -12,6 +12,7 @@ var Skyfall = {
 	}
 	
 	, addServer: function(serverName, ip, port, start){
+		if(!port) port = 3007;
 		if(!start) start = true;
 		
 		var socket = io.connect('http://' + ip + ':' + port, {

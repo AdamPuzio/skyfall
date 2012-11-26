@@ -7,8 +7,16 @@ $(document).ready(function(){
 		Skyfall._settings.animate = false;
 	}
 	for(var name in servers){
-		var address = servers[name]['address'];
-		var port = servers[name]['port'];
+		var server = servers[name];
+		var port = 3007;
+		if(typeof server == 'object'){
+			var address = server['address'];
+			if(server['port']) port = server['port'];
+		}else{
+			var split = server.split(':');
+			var address = split[0];
+			if(split.length > 1) port = split[1];
+		}
 		Skyfall.addServer(name, address, port);
 	}
 	
