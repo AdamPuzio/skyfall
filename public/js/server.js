@@ -2,6 +2,10 @@
 
 
 $(document).ready(function(){
+	if(servers && Object.keys(servers).length > 6){
+		$('.animate').removeClass('active');
+		Skyfall._settings.animate = false;
+	}
 	for(var name in servers){
 		var address = servers[name]['address'];
 		var port = servers[name]['port'];
