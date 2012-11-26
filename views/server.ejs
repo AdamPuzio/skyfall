@@ -2,14 +2,6 @@
 	
 		<div class="row-fluid">
 			<div class="span6">
-				<form id="addServerForm" class="form-inline">
-					<input type="text" class="input-small" name="name" placeholder="Name" />
-					<input type="text" class="input-small" name="ip" placeholder="IP/URL" />
-					<input type="text" class="input-mini" name="port" placeholder="port" value="3007" />
-					<button type="submit" class="btn">Add</button>
-				</form>
-			</div>
-			<div class="span6">
 				<div class="btn-group" data-toggle="buttons-checkbox">
 					<button type="button" class="btn simple-mode hidden-phone">Simple Mode</button>
 					<button type="button" class="btn animate active">Animate</button>
@@ -82,26 +74,16 @@
 		</div>
 		
 <script type="text/javascript">
-
-var servers = <%- JSON.stringify(servers) %>;
 	
 $(document).ready(function(){
-	if(servers && Object.keys(servers).length > 6){
-		$('.animate').removeClass('active');
-		Skyfall._settings.animate = false;
-	}
-	for(var name in servers){
-		var server = servers[name];
-		var port = 3007;
-		if(typeof server == 'object'){
-			var address = server['address'];
-			if(server['port']) port = server['port'];
-		}else{
-			var split = server.split(':');
-			var address = split[0];
-			if(split.length > 1) port = split[1];
-		}
-		Skyfall.addServer(name, address, port);
-	}
+	Skyfall.addServer('<%=address%>', '<%=address%>', <%=port%>);
+	
+	$('#addServerForm .btn').click(function(e){
+		e.preventDefault();
+		var name = $('#addServerForm input[name="name"]').val();
+		var ip = $('#addServerForm input[name="ip"]').val();
+		var port = $('#addServerForm input[name="port"]').val();
+		Skyfall.addServer(name, ip, port);
+	});
 });
 </script>

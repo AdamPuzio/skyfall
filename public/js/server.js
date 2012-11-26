@@ -2,24 +2,6 @@
 
 
 $(document).ready(function(){
-	if(servers && Object.keys(servers).length > 6){
-		$('.animate').removeClass('active');
-		Skyfall._settings.animate = false;
-	}
-	for(var name in servers){
-		var server = servers[name];
-		var port = 3007;
-		if(typeof server == 'object'){
-			var address = server['address'];
-			if(server['port']) port = server['port'];
-		}else{
-			var split = server.split(':');
-			var address = split[0];
-			if(split.length > 1) port = split[1];
-		}
-		Skyfall.addServer(name, address, port);
-	}
-	
 	$('#addServerForm .btn').click(function(e){
 		e.preventDefault();
 		var name = $('#addServerForm input[name="name"]').val();

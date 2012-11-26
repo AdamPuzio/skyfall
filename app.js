@@ -8,16 +8,14 @@ var express = require('express')
 	, http = require('http')
 	, path = require('path')
 	, server = http.createServer(app)
-	//, io = require('socket.io').listen(server)
 	, exec = require('child_process').exec
 	, util = require('util')
-	//, os = require('os')
+	, engine = require('ejs-locals')
 	, sky = require('./skyfall/skyfall');
-
-//io.set('log level', 1);
 
 app.configure(function(){
 	app.set('port', process.env.PORT || 3007);
+	app.engine('ejs', engine);
 	app.set('views', __dirname + '/views');
 	app.set('view engine', 'ejs');
 	app.use(express.favicon());
@@ -34,11 +32,12 @@ app.configure('development', function(){
 	app.use(express.errorHandler());
 });
 
+app.get('/server/:server', routes.server);
+app.get('/stack/:stack', routes.stack);
 app.get('/', routes.index);
 
 
 /*** START SKYFALL ****/
-//sky.fall.start(io, os);
 sky.fall.start(server);
 
 
