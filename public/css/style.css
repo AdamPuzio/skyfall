@@ -25,6 +25,7 @@
 }
 
 .server-load {width: 300px; margin: 10px; padding: 10px;}
+.server-load.single-server {width: auto;}
 .server-load.simple-mode {height: 150px;}
 @media (max-width: 480px) {
 	.server-load.simple-mode {height: 200px;}

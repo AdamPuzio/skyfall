@@ -11,44 +11,59 @@
 		
 		<br /><br />
 		
-		<div id="serversList">
-			
+		<div id="serverBox">
+			<div class="server-load single-server">
+				<div class="row-fluid">
+					<h3 class="server-name"></h3>
+				</div>
+				
+				<div class="row-fluid uptime-container" rel="tooltip" title="Uptime" data-placement="bottom">
+					<div class="uptime span12">-</div>
+				</div>
+				
+				<div class="cpu-all">
+					
+				</div>
+				
+				<div class="row-fluid">
+					<div class="span2">
+						<div class="row-fluid load">
+							<div class="load_1min span6" rel="tooltip" title="1 minute avg" data-placement="bottom">-</div>
+							<div class="load_5min span6" rel="tooltip" title="5 minute avg" data-placement="top">-</div>
+							
+							<div class="load_15min span6" rel="tooltip" title="15 minute avg" data-placement="bottom">-</div>
+							
+						</div>
+					</div>
+					<div class="span3">
+						<div class="row-fluid">
+							<div class="span12 diskspace-container" rel="tooltip" title="Diskspace" data-placement="top">
+								<div class="diskspace"></div>
+								<div class="diskspace-bar"></div>
+							</div>
+						</div>
+						<div class="row-fluid">
+							<div class="span12 memory-container" rel="tooltip" title="Memory" data-placement="bottom">
+								<div class="memory"></div>
+								<div class="memory-bar"></div>
+							</div>
+						</div>
+					</div>
+					<div class="span7 cpu">
+						
+					</div>
+				</div>
+				
+				<div class="row-fluid processes" style="margin-top:20px;">
+					
+				</div>
+				
+				
+			</div>
 		</div>
 		
 		<!-- Clone Box -->
 		<div id="cloneBox" class="hidden">
-		
-			<div class="server-load box disabled">
-				<div class="box-header-mini-right">
-					<i class="icon-refresh"></i>
-					<a href="#"><i class="icon-play"></i></a>
-					<a href="#"><i class="icon-pause hidden"></i></a>
-					<a href="#"><i class="icon-remove"></i></a>
-				</div>
-				<h3 class="server-name"></h3>
-				<div class="row-fluid uptime-container" rel="tooltip" title="Uptime" data-placement="bottom">
-					<div class="uptime span12">-</div>
-				</div>
-				<div class="row-fluid load">
-					<div class="load_1min span6" rel="tooltip" title="1 minute avg" data-placement="bottom">-</div>
-					<div class="load_5min span3 hidden-phonex" rel="tooltip" title="5 minute avg" data-placement="top">-</div>
-					<div class="span3 diskspace-container" rel="tooltip" title="Diskspace" data-placement="top">
-						<div class="diskspace"></div>
-						<div class="diskspace-bar"></div>
-					</div>
-					<div class="load_15min span3 hidden-phonex" rel="tooltip" title="15 minute avg" data-placement="bottom">-</div>
-					<div class="span3 memory-container" rel="tooltip" title="Memory" data-placement="bottom">
-						<div class="memory"></div>
-						<div class="memory-bar"></div>
-					</div>
-				</div>
-				<div class="cpu-all">
-					
-				</div>
-				<div class="cpu hidden-phone">
-					
-				</div>
-			</div>
 			
 			<!-- CPU -->
 			<div class="cpu-bar" rel="tooltip" title="CPU Load" data-placement="bottom">
@@ -76,7 +91,7 @@
 <script type="text/javascript">
 	
 $(document).ready(function(){
-	Skyfall.addServer('<%=address%>', '<%=address%>', <%=port%>);
+	Skyfall.showServer('<%=address%>', '<%=address%>', <%=port%>);
 	
 	$('#addServerForm .btn').click(function(e){
 		e.preventDefault();

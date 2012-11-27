@@ -22,6 +22,9 @@ exports.fall = function(){
 		
 		socket.diskspacePollRequestId = setInterval(scope.emitDiskspace, 10000, socket);
 		scope.emitDiskspace(socket);
+		
+		socket.psPollRequestId = setInterval(scope.emitProcesses, 5000, socket);
+		scope.emitProcesses(socket);
 	}
 	
 	, stopRequest = function(socket){
@@ -57,11 +60,22 @@ exports.fall = function(){
 		});
 	}
 	
+	, emitProcesses = function(socket){
+		var scope = socket.scope;
+		scope.exec('ps aux', function(err, stdout, stderr){
+			//console.log(stdout);
+			socket.emit('processes', stdout);
+			//var processes = stdout.split("\n");
+			//socket.emit('processes', processes);
+		});
+	}
+	
 	, init = function(server){
 		io = require('socket.io').listen(server);
 		io.set('log level', 1);
 		this.os = require('os');
 		this.diskspace = require('diskspace');
+		this.exec = require('child_process').exec;
 		var scope = this;
 		io.sockets.on('connection', function (socket) {
 			socket.scope = scope;
@@ -82,5 +96,6 @@ exports.fall = function(){
 		, interval: 2000
 		, emitDiskspace: emitDiskspace
 		, emitServerLoad: emitServerLoad
+		, emitProcesses: emitProcesses
 	}
 }();

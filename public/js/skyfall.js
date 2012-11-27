@@ -40,6 +40,48 @@ var Skyfall = {
 		// diskspace
 		socket.on('diskspace', $.proxy(this.diskspace, server));
 		
+		this.addListeners(server);
+		if(start) this.startServer(serverName);
+	}
+	
+	, showServer: function(serverName, ip, port){
+		if(!port) port = 3007;
+		
+		var socket = io.connect('http://' + ip + ':' + port, {
+			'reconnect': true
+			, 'reconnection delay': 500
+			, 'max reconnection attempts': 5
+		});
+		
+		var el = $('#serverBox .server-load');
+		console.log(el);
+		
+		var server = this._servers[serverName] = {
+			name: serverName
+			, ip: ip
+			, port: port
+			, socket: socket
+			, el: el
+			, cpuTimes: {}
+		};
+		
+		// sysInfo
+		socket.on('sysInfo', $.proxy(this.sysInfo, server));
+		// loadInfo
+		socket.on('loadInfo', $.proxy(this.loadInfo, server));
+		// diskspace
+		socket.on('diskspace', $.proxy(this.diskspace, server));
+		// processes
+		socket.on('processes', $.proxy(this.processes, server));
+		
+		this.addListeners(server);
+		this.startServer(serverName);
+	}
+	
+	, addListeners: function(server){
+		var socket = server.socket;
+		var el = server.el;
+		
 		// connecting
 		socket.on('connecting', $.proxy(function(){
 			this.el.addClass('inactive');
@@ -95,7 +137,7 @@ var Skyfall = {
 			e.preventDefault();
 			Skyfall.removeServer(this.name);
 		}, server));
-		if(start) this.startServer(serverName);
+		//if(start) this.startServer(serverName);
 	}
 	
 	, sysInfo: function(data){
@@ -186,6 +228,45 @@ var Skyfall = {
 		var pct = data.total > 0 ? Math.round((used / data.total) * 100) : 0;
 		this.el.find('.diskspace').html('D: ' + pct + '%');
 		this.el.find('.diskspace-bar').css({width: pct + '%'});
+	}
+	
+	, processes: function(data){
+		var p = data.toString('utf8').trim().split("\n");
+		var processes = [];
+		var flds = p[0].toString('utf8').trim().split(/\s+/);
+		var len = flds.length;
+		for(var i=1; i<p.length; i++){
+			var proc = p[i].split(/\s+/);
+			var process = {};
+			for(var j=0; j<flds.length; j++){
+				var fld = flds[j];
+				var pr = proc[j];
+				if(j+1 == flds.length)
+					pr = proc.slice(j).join(' ');
+				
+				process[fld] = pr;
+			}
+			processes.push(process);
+		}
+		
+		var table = $('<table class="table"></table>');
+		var tr = $('<tr></tr>').appendTo(table);
+		for(var i=0; i<flds.length; i++){
+			$('<th>' + flds[i] + '</th>').appendTo(tr);
+		}
+		
+		for(var i=0; i<processes.length; i++){
+			var process = processes[i];
+			var tr = $('<tr></tr>');
+			for(var j=0; j<flds.length; j++){
+				$('<td>' + process[flds[j]] + '</td>').appendTo(tr);
+			}
+			tr.appendTo(table);
+		}
+		
+		var el = $('.processes');
+		el.html('');
+		table.appendTo(el);
 	}
 	
 	, startServer: function(serverName){
