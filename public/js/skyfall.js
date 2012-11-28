@@ -31,6 +31,7 @@ var Skyfall = {
 			, socket: socket
 			, el: el
 			, cpuTimes: {}
+			, settings: {}
 		};
 		
 		// sysInfo
@@ -46,6 +47,7 @@ var Skyfall = {
 	
 	, showServer: function(serverName, ip, port){
 		if(!port) port = 3007;
+		var opts = {processes: true};
 		
 		var socket = io.connect('http://' + ip + ':' + port, {
 			'reconnect': true
@@ -62,6 +64,7 @@ var Skyfall = {
 			, socket: socket
 			, el: el
 			, cpuTimes: {}
+			, settings: opts
 		};
 		
 		// sysInfo
@@ -74,7 +77,7 @@ var Skyfall = {
 		socket.on('processes', $.proxy(this.processes, server));
 		
 		this.addListeners(server);
-		this.startServer(serverName);
+		this.startServer(serverName, opts);
 	}
 	
 	, addListeners: function(server){
@@ -107,7 +110,7 @@ var Skyfall = {
 		// reconnect
 		socket.on('reconnect', $.proxy(function(transport_type, reconnectionAttempts){
 			Skyfall.log('reconnected to ' + this.name);
-			Skyfall.startServer(this.name);
+			Skyfall.startServer(this.name, server.settings);
 			this.el.find('.icon-refresh').hide();
 		}, server));
 		// reconnect_failed
@@ -126,7 +129,7 @@ var Skyfall = {
 		
 		el.find('.icon-play').parent().click($.proxy(function(e){
 			e.preventDefault();
-			Skyfall.startServer(this.name);
+			Skyfall.startServer(this.name, server.settings);
 		}, server));
 		el.find('.icon-pause').parent().click($.proxy(function(e){
 			e.preventDefault();
@@ -267,9 +270,10 @@ var Skyfall = {
 		table.appendTo(el);
 	}
 	
-	, startServer: function(serverName){
+	, startServer: function(serverName, opts){
+		if(!opts) opts = {};
 		var server = Skyfall.getServer(serverName);
-		server.socket.emit('start', {});
+		server.socket.emit('start', opts);
 		server.el.removeClass('inactive');
 		server.el.find('.icon-play').addClass('hidden');
 		server.el.find('.icon-pause').removeClass('hidden');
@@ -293,7 +297,8 @@ var Skyfall = {
 	
 	, startAll: function(){
 		for(var i=0; i<this._servers.length; i++){
-			this.startServer(this._servers[i].name);
+			var server = this._servers[i];
+			this.startServer(server.name, server.settings);
 		}
 	}
 	

@@ -3,10 +3,11 @@ exports.fall = function(){
 	servers = null
 	, interval = 2000
 
-	, startRequest = function(socket){
+	, startRequest = function(socket, data){
+	console.log(data);
 		var scope = socket.scope;
 		var os = scope.os;
-		var interval = scope.interval;
+		var interval = data.interval || scope.interval;
 		
 		var sysInfo = {
 			hostname: os.hostname()
@@ -23,8 +24,10 @@ exports.fall = function(){
 		socket.diskspacePollRequestId = setInterval(scope.emitDiskspace, 10000, socket);
 		scope.emitDiskspace(socket);
 		
-		socket.psPollRequestId = setInterval(scope.emitProcesses, 5000, socket);
-		scope.emitProcesses(socket);
+		if(data.processes){
+			socket.psPollRequestId = setInterval(scope.emitProcesses, 5000, socket);
+			scope.emitProcesses(socket);
+		}
 	}
 	
 	, stopRequest = function(socket){
@@ -32,6 +35,10 @@ exports.fall = function(){
 		socket.pollRequestId = null;
 		clearInterval(socket.diskspacePollRequestId);
 		socket.diskspacePollRequestId = null;
+		if(socket.psPollRequestId){
+			clearInterval(socket.psPollRequestId);
+			socket.psPollRequestId = null;
+		}
 	}
 	
 	, emitServerLoad = function(socket){
@@ -63,10 +70,7 @@ exports.fall = function(){
 	, emitProcesses = function(socket){
 		var scope = socket.scope;
 		scope.exec('ps aux', function(err, stdout, stderr){
-			//console.log(stdout);
 			socket.emit('processes', stdout);
-			//var processes = stdout.split("\n");
-			//socket.emit('processes', processes);
 		});
 	}
 	
