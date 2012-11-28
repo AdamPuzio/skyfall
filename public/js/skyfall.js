@@ -54,7 +54,6 @@ var Skyfall = {
 		});
 		
 		var el = $('#serverBox .server-load');
-		console.log(el);
 		
 		var server = this._servers[serverName] = {
 			name: serverName
@@ -137,7 +136,6 @@ var Skyfall = {
 			e.preventDefault();
 			Skyfall.removeServer(this.name);
 		}, server));
-		//if(start) this.startServer(serverName);
 	}
 	
 	, sysInfo: function(data){
@@ -249,7 +247,7 @@ var Skyfall = {
 			processes.push(process);
 		}
 		
-		var table = $('<table class="table"></table>');
+		var table = $('<table class="table table-condensed table-bordered table-striped"></table>');
 		var tr = $('<tr></tr>').appendTo(table);
 		for(var i=0; i<flds.length; i++){
 			$('<th>' + flds[i] + '</th>').appendTo(tr);
