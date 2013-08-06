@@ -1,0 +1,19 @@
+{
+	"name": "skyfall",
+	"description": "A socket API for monitoring servers",
+	"version": "0.2.0",
+	"author": "Adam Puzio",
+	"scripts": {
+		"start": "node app"
+	},
+	"dependencies": {
+		"express": "*",
+		"ejs": "*",
+		"ejs-locals": "*",
+		"less-middleware": "*",
+		"socket.io": "*",
+		"socket.io-client": "*",
+		"async": "*",
+		"underscore": "*"
+	}
+}

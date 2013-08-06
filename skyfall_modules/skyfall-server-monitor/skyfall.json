@@ -1,0 +1,15 @@
+{
+	"name": "Skyfall Server Monitor",
+	"description": "Server Monitor",
+	"includes": {
+		"scripts": [
+			"js/server-monitor.js"
+		],
+		"stylesheets": [
+			"css/server-monitor.css"
+		],
+		"templates": [
+			"tpl/server-monitor.html"
+		]
+	}
+}

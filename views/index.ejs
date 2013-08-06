@@ -1,0 +1,24 @@
+<% layout('/layouts/default') %>
+
+<% for(var i=0; i<includes.scripts.length; i++){ script(includes.scripts[i]); } %>
+<% for(var i=0; i<includes.stylesheets.length; i++){ stylesheet(includes.stylesheets[i]); } %>
+	
+<body>
+		<div id="dashboard" class="row">
+			
+		</div>
+		<div id="templates"></div>
+	
+<script>
+	
+$(function(){
+	Skyfall.launch({
+		socketUrl: '<%= mainUrl %>'
+		, templates: <%- JSON.stringify(typeof includes.templates == 'undefined' ? [] : includes.templates) %>
+	});
+	
+	Skyfall.on('ready', function(){
+		Skyfall.addSatellites(<%- JSON.stringify(typeof servers == 'undefined' ? {} : servers) %>);
+	});
+});
+</script>

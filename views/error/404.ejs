@@ -1,0 +1,19 @@
+<% layout('/layouts/default') -%>
+
+<% if(typeof(title) == 'undefined'){ title = '404 Error'; } %>
+
+<% if(title !== false){ %>
+<div class="page-header">
+	<h1>
+		<%=title%> 
+		<small> <% if(typeof(subtitle) != 'undefined'){ print(subtitle); } %></small>
+	</h1>
+</div>
+<% } %>
+
+<% if(typeof(header) != 'undefined'){ %>
+<div class="hero-unit">
+	<h3><%=header%></h3>
+	<p><% if(typeof(message) != 'undefined'){ print(message); } %></p>
+</div>
+<% } %>

@@ -1,0 +1,39 @@
+
+<script type="text/template" id="tpl_server_monitor">
+	<div class="mod-server-monitor">
+		<div class="row loadavg">
+			<div class="col-4 span-2 load-1min"></div>
+			<div class="col-4 span-1 load-5min"></div>
+			<div class="col-4 span-1 diskspace">
+				<div class="progress">
+					<div class="progress-bar" style="width: 60%;"></div>
+					<div class="title">Diskspace</div>
+				</div>
+			</div>
+			<div class="col-4 span-1 load-15min"></div>
+			<div class="col-4 span-1 memory">
+				<div class="progress">
+					<div class="progress-bar" style="width: 60%;"></div>
+					<div class="title">Memory</div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="cpus-all"></div>
+			<div class="cpus"></div>
+		</div>
+		<div class="row">
+			<div class="col-4"><small class="uptime"></small></div>
+			<div class="col-8"><small class="ts"></small></div>
+		</div>
+	</div>
+</script>
+
+<script type="text/template" id="tpl_server_monitor_progress">
+	<div class="cpu">
+		<div class="progress">
+			<div class="progress-bar progress-bar-success cpu-user" style="width: 10%"></div>
+			<div class="progress-bar progress-bar-danger cpu-sys" style="width: 10%"></div>
+		</div>
+	</div>
+</script>
