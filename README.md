@@ -26,6 +26,11 @@ To run just the satellite:
 $ node satellite.js
 ```
 
+### Sample Installation
+
+Skyfall can be installed and run immediately on a machine to see how it works. Simply run 
+the install and then go to [http://localhost:3000](http://localhost:3000). 
+
 ## Configuration
 
 [NConf](https://github.com/flatiron/nconf) is the configuration module of choice. It has 
@@ -42,6 +47,14 @@ This will attempt to load the config file `config/env/production.json`.
 $ app.js --config test
 ```
 This will attempt to load the config file `config/test.json`
+
+## Modules
+
+Skyfall is designed to be a window into your servers. While there is a basic server load monitor 
+built in, the real power is in the ability to customize and create your own Skyfall modules. 
+Each module should be built with both server-and-client-side functionality in mind. Skyfall 
+modules reside in `/skyfall_modules` and must include both a `satellite.js` and `skyfall.json` 
+file.
 
 ## Docs & Resources
 ### Node.js Modules
