@@ -2,10 +2,23 @@
 	"name": "skyfall",
 	"description": "A socket API for monitoring servers",
 	"version": "0.2.0",
-	"author": "Adam Puzio",
+	"author": "Adam Puzio <adam@puzio.me>",
+	"license": "MIT",
 	"scripts": {
 		"start": "node app"
 	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/AdamPuzio/skyfall.git"
+	},
+	"bugs": {
+		"url": "https://github.com/AdamPuzio/skyfall/issues"
+	},
+	"keywords": [
+		"server",
+		"monitor",
+		"stream"
+	],
 	"dependencies": {
 		"express": "*",
 		"ejs": "*",
