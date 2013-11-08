@@ -14,6 +14,7 @@
 		"socket.io": "*",
 		"socket.io-client": "*",
 		"async": "*",
-		"underscore": "*"
+		"underscore": "*",
+		"nconf": "*"
 	}
 }
