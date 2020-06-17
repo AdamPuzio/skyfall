@@ -6,7 +6,13 @@ var SkyfallServer = require('../lib/SkyfallServer.js')
 	, app = express()
 	, server = http.createServer(app)
 	, socket = require('./server-socket.js')
-	, routes = require('../routes');
+	, routes = require('../routes')
+
+const bodyParser = require('body-parser')
+const cookieParser = require('cookie-parser')
+const methodOverride = require('method-override')
+const session = require('express-session')
+const errorHandler = require('errorhandler')
 
 var config;
 var module_scripts = [];
@@ -14,20 +20,22 @@ var module_scripts = [];
 module.exports = function(cfg){
 	config = cfg;
 	var dir = config.mainDir;
+  console.log('mainDir: ' + dir)
 	var modules = SkyfallServer.getModules();
 	
-	app.configure(function(){
+	//app.configure(function(){
 		app.set('port', config.server.port);
 		app.set('views', dir + '/views');
 		app.set('view engine', 'ejs');
 		app.engine('ejs', engine);
 		//app.use(express.logger('dev'));
-		app.use(express.bodyParser());
-		app.use(express.methodOverride());
-		app.use(express.cookieParser(config.server.secret));
-		app.use(express.session());
-		app.use(app.router);
-		app.use(require('less-middleware')({ src: dir + '/public' }));
+		app.use(bodyParser());
+		app.use(methodOverride());
+		app.use(cookieParser(config.server.secret));
+		app.use(session());
+		//app.use(app.router);
+		//app.use(require('less-middleware')({ src: dir + '/public' }));
+		app.use(require('less-middleware')(dir + '/public'));
 		app.use(express.static(path.join(dir, 'public')));
 		
 		for(var modname in modules){
@@ -37,11 +45,11 @@ module.exports = function(cfg){
 				app.use(modDir, express.static(mod.publicDir));
 			}
 		}
-	});
+	//});
 	
-	app.configure('development', function(){
-		app.use(express.errorHandler());
-	});
+	//app.configure('development', function(){
+		app.use(errorHandler());
+	//});
 	
 	app.get('/', routes.index);
 	app.get('/stack/:stack', routes.stack);
